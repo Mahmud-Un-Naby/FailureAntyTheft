@@ -6,14 +6,14 @@ pass) will satisfy these protocols. Concrete database schema is out of scope her
 
 The bus deals in already-serialized ``bytes`` payloads on string topics, keeping it
 faithful to MQTT so that the in-process and MQTT implementations are interchangeable;
-serialization of the :mod:`failurealert.contracts` models is the caller's concern.
+serialization of the :mod:`failureantytheft.contracts` models is the caller's concern.
 """
 
 from collections.abc import AsyncIterator, Sequence
 from datetime import datetime
 from typing import Protocol, runtime_checkable
 
-from failurealert.contracts import DeviceConfig, DeviceRuntimeRecord, EventRecord
+from failureantytheft.contracts import DeviceConfig, DeviceRuntimeRecord, EventRecord
 
 
 @runtime_checkable

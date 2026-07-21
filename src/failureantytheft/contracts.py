@@ -1,4 +1,4 @@
-"""Frozen shared contracts for FailureAlert (Pass 01).
+"""Frozen shared contracts for FailureAntyTheft (Pass 01).
 
 These are the versioned, strict Pydantic v2 models exchanged over the bus and the
 WebSocket gateway, plus the minimal persistence models referenced by the ``Repo``
@@ -256,7 +256,7 @@ class ChartSample(_VersionedModel):
 
 
 class SystemStatus(_VersionedModel):
-    """Server/broker health (topic ``failurealert/system/status``)."""
+    """Server/broker health (topic ``failureantytheft/system/status``)."""
 
     ready: bool
     transport: Transport

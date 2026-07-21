@@ -4,8 +4,14 @@ from datetime import UTC, datetime
 
 import pytest
 
-from failurealert.contracts import Acceleration, Command, CommandAction, DeviceStateEnum, Telemetry
-from failurealert.detection import (
+from failureantytheft.contracts import (
+    Acceleration,
+    Command,
+    CommandAction,
+    DeviceStateEnum,
+    Telemetry,
+)
+from failureantytheft.detection import (
     AlertTriggered,
     CalibrationFailed,
     DetectorConfig,

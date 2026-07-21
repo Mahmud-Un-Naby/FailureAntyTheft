@@ -5,16 +5,16 @@ import time
 from datetime import UTC, datetime
 from pathlib import Path
 
-from failurealert.collector import DeviceCollector
-from failurealert.contracts import Command, DeviceConfig, LinkState, Telemetry
-from failurealert.database import SQLiteRepo
-from failurealert.messaging import InProcBus, MqttBus
-from failurealert.ports import Bus
-from failurealert.runtime import DeviceRuntime
-from failurealert.topics import COMMAND, LINK, TELEMETRY, parse_device_topic
+from failureantytheft.collector import DeviceCollector
+from failureantytheft.contracts import Command, DeviceConfig, LinkState, Telemetry
+from failureantytheft.database import SQLiteRepo
+from failureantytheft.messaging import InProcBus, MqttBus
+from failureantytheft.ports import Bus
+from failureantytheft.runtime import DeviceRuntime
+from failureantytheft.topics import COMMAND, LINK, TELEMETRY, parse_device_topic
 
 
-class FailureAlertService:
+class FailureAntyTheftService:
     def __init__(
         self,
         database_path: str | Path,
@@ -72,7 +72,7 @@ class FailureAlertService:
         return runtime
 
     async def _route_inputs(self) -> None:
-        subscription = self.bus.subscribe("failurealert/devices/#")
+        subscription = self.bus.subscribe("failureantytheft/devices/#")
         async for topic, payload in subscription:
             try:
                 device_id, kind = parse_device_topic(topic)
@@ -105,4 +105,4 @@ class FailureAlertService:
         return datetime.now(UTC)
 
 
-__all__ = ["FailureAlertService"]
+__all__ = ["FailureAntyTheftService"]

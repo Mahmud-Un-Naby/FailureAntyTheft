@@ -36,10 +36,10 @@ fixtures.
 Claude initially created:
 
 - `pyproject.toml` and `.gitignore`;
-- `src/failurealert/__init__.py`;
-- `src/failurealert/contracts.py`;
-- `src/failurealert/topics.py`;
-- `src/failurealert/ports.py`;
+- `src/failureantytheft/__init__.py`;
+- `src/failureantytheft/contracts.py`;
+- `src/failureantytheft/topics.py`;
+- `src/failureantytheft/ports.py`;
 - `tests/test_contracts.py`; and
 - `tests/test_topics.py`.
 

@@ -2,7 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from failurealert.contracts import (
+from failureantytheft.contracts import (
     AlertSeverity,
     AlertState,
     AlertType,
@@ -11,7 +11,7 @@ from failurealert.contracts import (
     DeviceStateEnum,
     EventRecord,
 )
-from failurealert.database import SQLiteRepo
+from failureantytheft.database import SQLiteRepo
 
 NOW = datetime(2026, 7, 21, tzinfo=UTC)
 

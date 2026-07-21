@@ -8,11 +8,11 @@ from typing import Protocol
 
 import httpx
 
-from failurealert.collector.phyphox import PhyphoxClient, PollResult
-from failurealert.collector.security import validate_sensor_url
-from failurealert.contracts import Acceleration, DeviceConfig, LinkState, Telemetry
-from failurealert.ports import Bus
-from failurealert.topics import link_topic, telemetry_topic
+from failureantytheft.collector.phyphox import PhyphoxClient, PollResult
+from failureantytheft.collector.security import validate_sensor_url
+from failureantytheft.contracts import Acceleration, DeviceConfig, LinkState, Telemetry
+from failureantytheft.ports import Bus
+from failureantytheft.topics import link_topic, telemetry_topic
 
 
 class PollClient(Protocol):

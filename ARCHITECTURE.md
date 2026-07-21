@@ -1,4 +1,4 @@
-# FailureAlert architecture and collaboration agreement
+# FailureAntyTheft architecture and collaboration agreement
 
 Status: ratified by Claude and Codex on 2026-07-21. This document refines the
 high-level design in `PROJECT_PLAN.md`. It is a planning artifact; no
@@ -128,13 +128,13 @@ has excessive variance.
 
 | Topic | QoS / retain | Sole writer | Readers | Purpose |
 |---|---|---|---|---|
-| `failurealert/devices/{id}/telemetry` | 0 | Collector | Runtime | Normalized sample or sample batch |
-| `failurealert/devices/{id}/link` | 1, retained | Collector | Runtime | Online, last-seen, and failure facts |
-| `failurealert/devices/{id}/command` | 1 | API | Runtime | Arm, disarm, or acknowledge request |
-| `failurealert/devices/{id}/state` | 1, retained | Runtime | WS gateway | Unified operational view |
-| `failurealert/devices/{id}/alert` | 1 | Runtime | WS gateway | Movement/connectivity alert |
-| `failurealert/devices/{id}/chart` | 0 | Runtime | WS gateway | Magnitude and motion score |
-| `failurealert/system/status` | 1, retained | Application | WS gateway | Server and broker health |
+| `failureantytheft/devices/{id}/telemetry` | 0 | Collector | Runtime | Normalized sample or sample batch |
+| `failureantytheft/devices/{id}/link` | 1, retained | Collector | Runtime | Online, last-seen, and failure facts |
+| `failureantytheft/devices/{id}/command` | 1 | API | Runtime | Arm, disarm, or acknowledge request |
+| `failureantytheft/devices/{id}/state` | 1, retained | Runtime | WS gateway | Unified operational view |
+| `failureantytheft/devices/{id}/alert` | 1 | Runtime | WS gateway | Movement/connectivity alert |
+| `failureantytheft/devices/{id}/chart` | 0 | Runtime | WS gateway | Magnitude and motion score |
+| `failureantytheft/system/status` | 1, retained | Application | WS gateway | Server and broker health |
 
 All topic payloads are versioned Pydantic models. The initial contracts are:
 

@@ -3,11 +3,11 @@ from datetime import UTC, datetime
 
 import pytest
 
-from failurealert.collector.manager import DeviceCollector
-from failurealert.collector.phyphox import PollResult, RawSample
-from failurealert.contracts import DeviceConfig, LinkState, Telemetry
-from failurealert.messaging import InProcBus
-from failurealert.topics import link_topic, telemetry_topic
+from failureantytheft.collector.manager import DeviceCollector
+from failureantytheft.collector.phyphox import PollResult, RawSample
+from failureantytheft.contracts import DeviceConfig, LinkState, Telemetry
+from failureantytheft.messaging import InProcBus
+from failureantytheft.topics import link_topic, telemetry_topic
 
 NOW = datetime(2026, 7, 21, tzinfo=UTC)
 

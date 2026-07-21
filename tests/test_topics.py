@@ -2,24 +2,24 @@
 
 import pytest
 
-from failurealert import topics
+from failureantytheft import topics
 
 
 def test_build_expected_topics() -> None:
-    assert topics.telemetry_topic("phone-01") == "failurealert/devices/phone-01/telemetry"
-    assert topics.link_topic("phone-01") == "failurealert/devices/phone-01/link"
-    assert topics.command_topic("phone-01") == "failurealert/devices/phone-01/command"
-    assert topics.state_topic("phone-01") == "failurealert/devices/phone-01/state"
-    assert topics.alert_topic("phone-01") == "failurealert/devices/phone-01/alert"
-    assert topics.chart_topic("phone-01") == "failurealert/devices/phone-01/chart"
+    assert topics.telemetry_topic("phone-01") == "failureantytheft/devices/phone-01/telemetry"
+    assert topics.link_topic("phone-01") == "failureantytheft/devices/phone-01/link"
+    assert topics.command_topic("phone-01") == "failureantytheft/devices/phone-01/command"
+    assert topics.state_topic("phone-01") == "failureantytheft/devices/phone-01/state"
+    assert topics.alert_topic("phone-01") == "failureantytheft/devices/phone-01/alert"
+    assert topics.chart_topic("phone-01") == "failureantytheft/devices/phone-01/chart"
 
 
 def test_system_status_constant() -> None:
-    assert topics.SYSTEM_STATUS_TOPIC == "failurealert/system/status"
+    assert topics.SYSTEM_STATUS_TOPIC == "failureantytheft/system/status"
 
 
 def test_wildcard_topic() -> None:
-    assert topics.device_wildcard(topics.TELEMETRY) == "failurealert/devices/+/telemetry"
+    assert topics.device_wildcard(topics.TELEMETRY) == "failureantytheft/devices/+/telemetry"
 
 
 @pytest.mark.parametrize("kind", sorted(topics.DEVICE_TOPIC_KINDS))
@@ -44,11 +44,11 @@ def test_build_rejects_unknown_kind() -> None:
 @pytest.mark.parametrize(
     "topic",
     [
-        "failurealert/system/status",
-        "failurealert/devices/phone-01",
-        "failurealert/devices/phone-01/telemetry/extra",
-        "failurealert/devices/phone 01/telemetry",
-        "failurealert/devices/phone-01/bogus",
+        "failureantytheft/system/status",
+        "failureantytheft/devices/phone-01",
+        "failureantytheft/devices/phone-01/telemetry/extra",
+        "failureantytheft/devices/phone 01/telemetry",
+        "failureantytheft/devices/phone-01/bogus",
         "other/devices/phone-01/telemetry",
     ],
 )

@@ -4,7 +4,7 @@ from collections.abc import Callable, Sequence
 from datetime import UTC, datetime
 from uuid import uuid4
 
-from failurealert.contracts import (
+from failureantytheft.contracts import (
     Alert,
     AlertSeverity,
     AlertState,
@@ -19,7 +19,7 @@ from failurealert.contracts import (
     LinkState,
     Telemetry,
 )
-from failurealert.detection import (
+from failureantytheft.detection import (
     AlertTriggered,
     ChartPoint,
     DetectorConfig,
@@ -30,8 +30,8 @@ from failurealert.detection import (
     StateChanged,
     Tick,
 )
-from failurealert.ports import Bus, Repo
-from failurealert.topics import alert_topic, chart_topic, state_topic
+from failureantytheft.ports import Bus, Repo
+from failureantytheft.topics import alert_topic, chart_topic, state_topic
 
 
 class DeviceRuntime:

@@ -6,7 +6,7 @@ from contextlib import suppress
 
 import aiomqtt
 
-from failurealert.messaging.inproc import _matches
+from failureantytheft.messaging.inproc import _matches
 
 
 class MqttBus:

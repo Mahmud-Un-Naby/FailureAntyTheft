@@ -6,7 +6,7 @@ from pathlib import Path
 
 import aiosqlite
 
-from failurealert.contracts import (
+from failureantytheft.contracts import (
     AlertSeverity,
     AlertState,
     AlertType,

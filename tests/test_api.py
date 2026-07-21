@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from failurealert.api import create_app
+from failureantytheft.api import create_app
 
 
 def test_health_registration_commands_and_events(tmp_path: object) -> None:

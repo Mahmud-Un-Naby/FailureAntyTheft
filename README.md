@@ -1,6 +1,6 @@
-# FailureAlert
+# FailureAntyTheft
 
-FailureAlert uses phones running Phyphox as Wi-Fi motion sensors. A local Python
+FailureAntyTheft uses phones running Phyphox as Wi-Fi motion sensors. A local Python
 server calibrates each phone, detects sustained movement, stores alerts in
 SQLite, and updates a browser dashboard over WebSocket.
 
@@ -34,14 +34,14 @@ Load the environment and start the application:
 set -a
 source .env
 set +a
-.venv/bin/failurealert
+.venv/bin/failureantytheft
 ```
 
 Open `http://localhost:8000`. API documentation is at
 `http://localhost:8000/docs`.
 
 For development without a broker, explicitly set
-`FAILUREALERT_TRANSPORT=inproc`. The application never silently falls back from
+`FAILUREANTYTHEFT_TRANSPORT=inproc`. The application never silently falls back from
 MQTT.
 
 ## Connect a phone

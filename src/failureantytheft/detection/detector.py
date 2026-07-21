@@ -11,7 +11,7 @@ from collections import deque
 from dataclasses import dataclass
 from typing import TypeAlias
 
-from failurealert.contracts import Command, CommandAction, DeviceId, DeviceStateEnum, Telemetry
+from failureantytheft.contracts import Command, CommandAction, DeviceId, DeviceStateEnum, Telemetry
 
 
 @dataclass(frozen=True, slots=True)

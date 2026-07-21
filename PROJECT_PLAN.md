@@ -1,8 +1,8 @@
-# FailureAlert: Phone-Based IoT Movement and Anti-Theft System
+# FailureAntyTheft: Phone-Based IoT Movement and Anti-Theft System
 
 ## 1. Project summary
 
-FailureAlert is a local-network IoT system that uses ordinary smartphones as
+FailureAntyTheft is a local-network IoT system that uses ordinary smartphones as
 wireless motion sensors. A phone is placed inside or attached to an object such
 as a laptop bag, drawer, bicycle, laboratory item, or equipment case. When the
 system is armed, unexpected movement creates an alert on a laptop dashboard and
@@ -252,11 +252,11 @@ authorization, and TLS.
 Suggested topics:
 
 ```text
-failurealert/devices/{device_id}/telemetry
-failurealert/devices/{device_id}/status
-failurealert/devices/{device_id}/command
-failurealert/devices/{device_id}/alert
-failurealert/system/status
+failureantytheft/devices/{device_id}/telemetry
+failureantytheft/devices/{device_id}/status
+failureantytheft/devices/{device_id}/command
+failureantytheft/devices/{device_id}/alert
+failureantytheft/system/status
 ```
 
 Suggested quality-of-service levels:
@@ -519,7 +519,7 @@ invalid state transitions should return clear errors.
 ## 16. Suggested repository structure
 
 ```text
-FailureAllert/
+FailureAntyTheft/
 ├── PROJECT_PLAN.md
 ├── README.md
 ├── pyproject.toml
@@ -527,7 +527,7 @@ FailureAllert/
 ├── config/
 │   └── devices.example.yaml
 ├── src/
-│   └── failurealert/
+│   └── failureantytheft/
 │       ├── main.py
 │       ├── config.py
 │       ├── collector/

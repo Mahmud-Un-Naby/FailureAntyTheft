@@ -3,7 +3,7 @@ from datetime import UTC, datetime
 
 import pytest
 
-from failurealert.contracts import (
+from failureantytheft.contracts import (
     Acceleration,
     Alert,
     AlertState,
@@ -13,11 +13,11 @@ from failurealert.contracts import (
     LinkState,
     Telemetry,
 )
-from failurealert.database import SQLiteRepo
-from failurealert.detection import DetectorConfig
-from failurealert.messaging import InProcBus
-from failurealert.runtime import DeviceRuntime
-from failurealert.topics import alert_topic
+from failureantytheft.database import SQLiteRepo
+from failureantytheft.detection import DetectorConfig
+from failureantytheft.messaging import InProcBus
+from failureantytheft.runtime import DeviceRuntime
+from failureantytheft.topics import alert_topic
 
 NOW = datetime(2026, 7, 21, tzinfo=UTC)
 

@@ -49,7 +49,7 @@ are not represented as physical evidence.
 
 ## User's next acceptance session
 
-Follow the README to start Mosquitto and FailureAlert, register both displayed
+Follow the README to start Mosquitto and FailureAntyTheft, register both displayed
 Phyphox URLs in the dashboard, confirm their buffers, then execute section 21 of
 `PROJECT_PLAN.md`. Record the results in a new report so the project can be
 truthfully marked fully ready.

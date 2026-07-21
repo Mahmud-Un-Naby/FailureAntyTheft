@@ -17,10 +17,10 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
-from failurealert.collector import validate_sensor_url
-from failurealert.contracts import Command, CommandAction, DeviceConfig
-from failurealert.service import FailureAlertService
-from failurealert.topics import command_topic, parse_device_topic
+from failureantytheft.collector import validate_sensor_url
+from failureantytheft.contracts import Command, CommandAction, DeviceConfig
+from failureantytheft.service import FailureAntyTheftService
+from failureantytheft.topics import command_topic, parse_device_topic
 
 STATIC_DIR = Path(__file__).with_name("static")
 
@@ -51,17 +51,17 @@ def create_app(
     database: str | Path = (
         database_path
         if database_path is not None
-        else os.environ.get("FAILUREALERT_DB", "data/failurealert.sqlite3")
+        else os.environ.get("FAILUREANTYTHEFT_DB", "data/failureantytheft.sqlite3")
     )
-    raw_transport = transport or os.getenv("FAILUREALERT_TRANSPORT", "mqtt")
+    raw_transport = transport or os.getenv("FAILUREANTYTHEFT_TRANSPORT", "mqtt")
     if raw_transport not in {"mqtt", "inproc"}:
-        raise ValueError("FAILUREALERT_TRANSPORT must be mqtt or inproc")
+        raise ValueError("FAILUREANTYTHEFT_TRANSPORT must be mqtt or inproc")
     selected_transport = cast(Literal["mqtt", "inproc"], raw_transport)
-    service = FailureAlertService(
+    service = FailureAntyTheftService(
         database,
         transport=selected_transport,
-        mqtt_host=os.getenv("FAILUREALERT_MQTT_HOST", "127.0.0.1"),
-        mqtt_port=int(os.getenv("FAILUREALERT_MQTT_PORT", "1883")),
+        mqtt_host=os.getenv("FAILUREANTYTHEFT_MQTT_HOST", "127.0.0.1"),
+        mqtt_port=int(os.getenv("FAILUREANTYTHEFT_MQTT_PORT", "1883")),
         enable_collectors=enable_collectors,
     )
 
@@ -72,8 +72,8 @@ def create_app(
         yield
         await service.stop()
 
-    app = FastAPI(title="FailureAlert", version="0.1.0", lifespan=lifespan)
-    app.state.failurealert = service
+    app = FastAPI(title="FailureAntyTheft", version="0.1.0", lifespan=lifespan)
+    app.state.failureantytheft = service
 
     @app.get("/api/health")
     async def health() -> dict[str, object]:
@@ -191,14 +191,14 @@ def create_app(
         return Response(
             stream.getvalue(),
             media_type="text/csv",
-            headers={"Content-Disposition": "attachment; filename=failurealert-events.csv"},
+            headers={"Content-Disposition": "attachment; filename=failureantytheft-events.csv"},
         )
 
     @app.websocket("/ws")
     async def websocket(websocket: WebSocket) -> None:
         await websocket.accept()
         selected: set[str] = set()
-        subscription = service.bus.subscribe("failurealert/devices/#")
+        subscription = service.bus.subscribe("failureantytheft/devices/#")
 
         async def receive() -> None:
             while True:

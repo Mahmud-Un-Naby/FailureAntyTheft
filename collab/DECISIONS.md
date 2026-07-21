@@ -1,4 +1,4 @@
-# FailureAlert decision ledger
+# FailureAntyTheft decision ledger
 
 This file records decisions ratified by the user, Claude, and Codex. Detailed
 design rationale lives in `ARCHITECTURE.md`; per-pass evidence and disagreements

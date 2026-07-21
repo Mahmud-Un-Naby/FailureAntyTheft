@@ -2,19 +2,19 @@ import asyncio
 
 import pytest
 
-from failurealert.messaging import InProcBus
+from failureantytheft.messaging import InProcBus
 
 
 @pytest.mark.asyncio
 async def test_bus_fans_out_and_matches_wildcard() -> None:
     bus = InProcBus()
     await bus.start()
-    subscription = bus.subscribe("failurealert/devices/+/telemetry")
+    subscription = bus.subscribe("failureantytheft/devices/+/telemetry")
     pending = asyncio.create_task(anext(subscription))
     await asyncio.sleep(0)
-    await bus.publish("failurealert/devices/phone-01/telemetry", b"sample")
+    await bus.publish("failureantytheft/devices/phone-01/telemetry", b"sample")
     assert await asyncio.wait_for(pending, 1) == (
-        "failurealert/devices/phone-01/telemetry",
+        "failureantytheft/devices/phone-01/telemetry",
         b"sample",
     )
     await subscription.aclose()

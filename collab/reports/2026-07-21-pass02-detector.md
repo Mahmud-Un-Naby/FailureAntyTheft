@@ -17,7 +17,7 @@ out of scope.
 
 ## 3. Changes
 
-- Added `failurealert.detection.detector` and package exports.
+- Added `failureantytheft.detection.detector` and package exports.
 - Added deterministic detector tests covering success and failure paths.
 
 ## 4. Contracts

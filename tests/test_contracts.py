@@ -5,7 +5,7 @@ from datetime import UTC, datetime, timedelta, timezone
 import pytest
 from pydantic import ValidationError
 
-from failurealert.contracts import (
+from failureantytheft.contracts import (
     CONTRACTS_VERSION,
     WS_ENVELOPE_ADAPTER,
     Acceleration,

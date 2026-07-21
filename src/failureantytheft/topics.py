@@ -1,23 +1,23 @@
 """Validated MQTT/bus topic construction and parsing.
 
-All topic strings for FailureAlert are built and parsed here so that device
+All topic strings for FailureAntyTheft are built and parsed here so that device
 identifiers are validated in exactly one place (reusing ``contracts.DEVICE_ID_RE``)
 and topic layout never drifts between publishers and subscribers.
 
 Layout::
 
-    failurealert/devices/{device_id}/telemetry
-    failurealert/devices/{device_id}/link
-    failurealert/devices/{device_id}/command
-    failurealert/devices/{device_id}/state
-    failurealert/devices/{device_id}/alert
-    failurealert/devices/{device_id}/chart
-    failurealert/system/status
+    failureantytheft/devices/{device_id}/telemetry
+    failureantytheft/devices/{device_id}/link
+    failureantytheft/devices/{device_id}/command
+    failureantytheft/devices/{device_id}/state
+    failureantytheft/devices/{device_id}/alert
+    failureantytheft/devices/{device_id}/chart
+    failureantytheft/system/status
 """
 
-from failurealert.contracts import DEVICE_ID_RE
+from failureantytheft.contracts import DEVICE_ID_RE
 
-TOPIC_ROOT = "failurealert"
+TOPIC_ROOT = "failureantytheft"
 
 # Per-device topic kinds (the final path segment).
 TELEMETRY = "telemetry"

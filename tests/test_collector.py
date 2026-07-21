@@ -1,7 +1,7 @@
 import httpx
 import pytest
 
-from failurealert.collector import BufferNames, PhyphoxClient, validate_sensor_url
+from failureantytheft.collector import BufferNames, PhyphoxClient, validate_sensor_url
 
 
 def response() -> dict[str, object]:

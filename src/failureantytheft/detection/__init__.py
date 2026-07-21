@@ -1,6 +1,6 @@
 """Pure movement detection and device state-machine logic."""
 
-from failurealert.detection.detector import (
+from failureantytheft.detection.detector import (
     AlertTriggered,
     CalibrationFailed,
     ChartPoint,

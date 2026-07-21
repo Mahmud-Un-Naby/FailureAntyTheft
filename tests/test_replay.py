@@ -4,8 +4,8 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
-from failurealert.contracts import Acceleration, Command, CommandAction, Telemetry
-from failurealert.detection import (
+from failureantytheft.contracts import Acceleration, Command, CommandAction, Telemetry
+from failureantytheft.detection import (
     AlertTriggered,
     DetectorConfig,
     DeviceDetector,
