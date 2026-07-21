@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FailureAlert</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header><div><p class="eyebrow">LOCAL IOT MONITOR</p><h1>FailureAlert</h1></div><div class="header-actions"><button id="enable-audio">Enable alarm sound</button><button id="arm-all">Arm all</button><button id="disarm-all">Disarm all</button><div id="health" class="pill">Connecting…</div></div></header>
+  <main>
+    <section class="panel"><div class="section-title"><h2>Register phone</h2></div><form id="register"><input name="device_id" placeholder="phone-01" required><input name="name" placeholder="Bag phone" required><input name="source_url" placeholder="http://192.168.1.20:8080" required><input name="sensitivity" type="number" min="0.01" step="0.1" value="1.5" required><button>Register</button><span id="form-status"></span></form></section>
+    <section class="panel"><div class="section-title"><h2>Devices</h2><button id="refresh">Refresh</button></div><div id="devices" class="cards"></div></section>
+    <section class="panel chart-panel"><div class="section-title"><h2>Live motion</h2><span id="chart-label">Select a device</span></div><canvas id="chart" width="900" height="240"></canvas></section>
+    <section class="panel"><div class="section-title"><h2>Event history</h2><a href="/api/events/export.csv">Export CSV</a></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Device</th><th>Type</th><th>Severity</th><th>State</th><th></th></tr></thead><tbody id="events"></tbody></table></div></section>
+  </main>
+  <div id="alarm" class="alarm hidden"><strong>Movement detected</strong><span id="alarm-text"></span><button id="ack">Acknowledge & disarm</button></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
