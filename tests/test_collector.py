@@ -7,7 +7,7 @@ from failureantytheft.collector import BufferNames, PhyphoxClient, validate_sens
 def response() -> dict[str, object]:
     return {
         "buffer": {
-            "t": {"size": 100, "updateMode": "partial", "buffer": [1.0, 1.1]},
+            "acc_time": {"size": 100, "updateMode": "partial", "buffer": [1.0, 1.1]},
             "accX": {"size": 100, "updateMode": "partial", "buffer": [0.1, 0.2]},
             "accY": {"size": 100, "updateMode": "partial", "buffer": [0.0, 0.1]},
             "accZ": {"size": 100, "updateMode": "partial", "buffer": [9.8, 9.7]},
@@ -42,8 +42,18 @@ async def test_poll_uses_reference_cursor() -> None:
     client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
     phyphox = PhyphoxClient("http://192.168.1.2:8080", client=client)
     await phyphox.poll(1.0)
-    assert "accX=1%7Ct" in seen_url
+    assert "acc_time=1" in seen_url
+    assert "accX=1%7Cacc_time" in seen_url
     await client.aclose()
+
+
+def test_defaults_match_builtin_acceleration_with_g_experiment() -> None:
+    assert BufferNames() == BufferNames(
+        time="acc_time",
+        x="accX",
+        y="accY",
+        z="accZ",
+    )
 
 
 @pytest.mark.asyncio

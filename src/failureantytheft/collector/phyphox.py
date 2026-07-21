@@ -9,7 +9,7 @@ import httpx
 
 @dataclass(frozen=True, slots=True)
 class BufferNames:
-    time: str = "t"
+    time: str = "acc_time"
     x: str = "accX"
     y: str = "accY"
     z: str = "accZ"

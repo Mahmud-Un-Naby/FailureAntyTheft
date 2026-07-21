@@ -54,8 +54,9 @@ MQTT.
    iPhone may use port 80.
 5. If the experiment uses different buffer names, adjust `BufferNames` in the
    collector configuration before the physical demo. The current defaults are
-   `t`, `accX`, `accY`, and `accZ` and must be confirmed against `/config` on the
-   actual phones.
+   `acc_time`, `accX`, `accY`, and `accZ`, matching Phyphox's built-in
+   **Acceleration with g** experiment. Confirm custom experiments against the
+   phone's `/config` endpoint.
 
 Example registration:
 
