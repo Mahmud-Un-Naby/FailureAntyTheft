@@ -3,18 +3,184 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>FailureAntyTheft</title>
+  <meta name="theme-color" content="#0a0f1c">
+  <meta name="description" content="Local, real-time protection for devices monitored with Phyphox sensors.">
+  <title>FailureAntyTheft · Security Console</title>
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <header><div><p class="eyebrow">LOCAL IOT MONITOR</p><h1>FailureAntyTheft</h1></div><div class="header-actions"><button id="enable-audio">Enable alarm sound</button><button id="arm-all">Arm all</button><button id="disarm-all">Disarm all</button><div id="health" class="pill">Connecting…</div></div></header>
-  <main>
-    <section class="panel"><div class="section-title"><h2>Register phone</h2></div><form id="register"><input name="device_id" placeholder="phone-01" required><input name="name" placeholder="Bag phone" required><input name="source_url" placeholder="http://192.168.1.20:8080" required><input name="sensitivity" type="number" min="0.01" step="0.1" value="1.5" required><button>Register</button><span id="form-status"></span></form></section>
-    <section class="panel"><div class="section-title"><h2>Devices</h2><button id="refresh">Refresh</button></div><div id="devices" class="cards"></div></section>
-    <section class="panel chart-panel"><div class="section-title"><h2>Live motion</h2><span id="chart-label">Select a device</span></div><canvas id="chart" width="900" height="240"></canvas></section>
-    <section class="panel"><div class="section-title"><h2>Event history</h2><a href="/api/events/export.csv">Export CSV</a></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>Device</th><th>Type</th><th>Severity</th><th>State</th><th></th></tr></thead><tbody id="events"></tbody></table></div></section>
-  </main>
-  <div id="alarm" class="alarm hidden"><strong>Movement detected</strong><span id="alarm-text"></span><button id="ack">Acknowledge & disarm</button></div>
+  <div class="app-shell">
+    <aside id="sidebar" class="sidebar" aria-label="Primary navigation">
+      <a class="brand" href="#overview" aria-label="FailureAntyTheft home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 2 20 5v6c0 5.2-3.4 9.7-8 11-4.6-1.3-8-5.8-8-11V5l8-3Z"/><path d="m8.8 12 2 2 4.5-4.7"/></svg>
+        </span>
+        <span><strong>FailureAntyTheft</strong><small>Security Console</small></span>
+      </a>
+
+      <nav class="nav-list">
+        <a class="nav-item active" href="#overview"><span class="nav-icon">⌂</span>Overview</a>
+        <a class="nav-item" href="#devices-section"><span class="nav-icon">◫</span>Protected devices</a>
+        <a class="nav-item" href="#monitoring"><span class="nav-icon">⌁</span>Live monitoring</a>
+        <a class="nav-item" href="#history"><span class="nav-icon">≡</span>Event history</a>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+      <div class="connection-card">
+        <div class="connection-heading">
+          <span id="health-dot" class="status-dot pending"></span>
+          <span id="health-label">Connecting</span>
+        </div>
+        <p id="health">Contacting local server…</p>
+        <div class="connection-meta"><span>Live channel</span><strong id="ws-status">Waiting</strong></div>
+      </div>
+      <a class="docs-link" href="/docs" target="_blank" rel="noreferrer">API documentation <span>↗</span></a>
+    </aside>
+
+    <button id="sidebar-backdrop" class="sidebar-backdrop" type="button" aria-label="Close navigation"></button>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="topbar-leading">
+          <button id="mobile-menu" class="icon-button mobile-only" type="button" aria-label="Open navigation">☰</button>
+          <div>
+            <p class="breadcrumb">Local security / Dashboard</p>
+            <h1>Protection overview</h1>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="current-time"><span>Local time</span><strong id="clock">--:--</strong></div>
+          <button id="enable-audio" class="button button-quiet" type="button">
+            <span aria-hidden="true">♩</span><span>Enable alert sound</span>
+          </button>
+          <button id="open-register" class="button button-primary" type="button">
+            <span aria-hidden="true">＋</span><span>Add sensor</span>
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section id="overview" class="hero-section" aria-labelledby="overview-heading">
+          <div>
+            <p class="section-kicker">REAL-TIME PROTECTION</p>
+            <h2 id="overview-heading">Your monitored space at a glance</h2>
+            <p class="section-copy">Review sensor health, arm protection, and respond to movement from one local console.</p>
+          </div>
+          <div class="global-actions" aria-label="Global device controls">
+            <button id="disarm-all" class="button button-secondary" type="button">Disarm all</button>
+            <button id="arm-all" class="button button-primary" type="button"><span class="button-dot"></span>Arm all devices</button>
+          </div>
+        </section>
+
+        <section class="metrics-grid" aria-label="Protection summary">
+          <article class="metric-card">
+            <div class="metric-icon blue" aria-hidden="true">◫</div>
+            <div><p>Total sensors</p><strong id="metric-total">0</strong><span id="metric-total-note">No sensors registered</span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-icon green" aria-hidden="true">●</div>
+            <div><p>Online now</p><strong id="metric-online">0</strong><span id="metric-online-note">Waiting for devices</span></div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-icon violet" aria-hidden="true">◆</div>
+            <div><p>Armed</p><strong id="metric-armed">0</strong><span id="metric-armed-note">Protection is inactive</span></div>
+          </article>
+          <article class="metric-card alert-metric">
+            <div class="metric-icon red" aria-hidden="true">!</div>
+            <div><p>Active alerts</p><strong id="metric-alerts">0</strong><span id="metric-alerts-note">No action required</span></div>
+          </article>
+        </section>
+
+        <section id="devices-section" class="panel devices-panel" aria-labelledby="devices-heading">
+          <div class="panel-heading">
+            <div>
+              <div class="heading-line"><h2 id="devices-heading">Protected devices</h2><span id="device-count" class="count-badge">0</span></div>
+              <p>Each phone operates as an independent motion sensor.</p>
+            </div>
+            <div class="panel-actions">
+              <button id="refresh" class="icon-button" type="button" aria-label="Refresh dashboard" title="Refresh dashboard">↻</button>
+              <button id="open-register-secondary" class="button button-secondary" type="button">Add sensor</button>
+            </div>
+          </div>
+          <div id="devices" class="device-grid" aria-live="polite"></div>
+        </section>
+
+        <section id="monitoring" class="monitoring-grid" aria-label="Live monitoring">
+          <article class="panel chart-panel">
+            <div class="panel-heading compact">
+              <div>
+                <div class="heading-line"><h2>Live motion</h2><span id="chart-status" class="live-badge"><i></i>Waiting</span></div>
+                <p id="chart-subtitle">Select a sensor to begin monitoring.</p>
+              </div>
+              <div class="chart-reading"><span>Motion score</span><strong id="chart-value">0.00</strong></div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chart" role="img" aria-label="Live device motion score chart"></canvas>
+              <div id="chart-empty" class="chart-empty"><span>⌁</span><strong>No live signal selected</strong><p>Choose “View live” on a device card.</p></div>
+            </div>
+            <div class="chart-footer"><span><i class="legend-dot"></i><strong id="chart-label">No sensor selected</strong></span><span>Latest 120 samples</span></div>
+          </article>
+
+          <aside class="panel guide-panel">
+            <div class="guide-icon" aria-hidden="true">✓</div>
+            <p class="section-kicker">QUICK START</p>
+            <h2>Ready in three steps</h2>
+            <ol class="setup-steps">
+              <li><span>1</span><div><strong>Connect Phyphox</strong><p>Enable remote access on the same private Wi-Fi.</p></div></li>
+              <li><span>2</span><div><strong>Add the sensor</strong><p>Use the private URL displayed by the phone.</p></div></li>
+              <li><span>3</span><div><strong>Arm and place</strong><p>Keep the phone still while it calibrates.</p></div></li>
+            </ol>
+            <button id="guide-add" class="button button-secondary full-width" type="button">Add your first sensor</button>
+          </aside>
+        </section>
+
+        <section id="history" class="panel history-panel" aria-labelledby="history-heading">
+          <div class="panel-heading">
+            <div>
+              <div class="heading-line"><h2 id="history-heading">Event history</h2><span id="event-count" class="count-badge">0</span></div>
+              <p>Alerts and connectivity events are stored locally.</p>
+            </div>
+            <div class="panel-actions">
+              <label class="select-control"><span class="sr-only">Filter events</span><select id="event-filter"><option value="all">All events</option><option value="active">Active only</option><option value="movement_detected">Movement</option><option value="connectivity_warning">Connectivity</option></select></label>
+              <a class="button button-secondary" href="/api/events/export.csv">Export CSV</a>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Event</th><th>Device</th><th>Detected</th><th>Severity</th><th>Status</th><th><span class="sr-only">Actions</span></th></tr></thead>
+              <tbody id="events"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <aside id="alarm" class="alarm-banner hidden" role="alert" aria-live="assertive">
+    <div class="alarm-symbol">!</div>
+    <div><p>Immediate attention required</p><strong>Movement detected</strong><span id="alarm-text"></span></div>
+    <button id="ack" class="button alarm-button" type="button">Acknowledge & disarm</button>
+  </aside>
+
+  <dialog id="device-dialog" class="device-dialog">
+    <form id="register" method="dialog">
+      <div class="dialog-heading">
+        <div><p class="section-kicker">SENSOR SETUP</p><h2 id="dialog-title">Add a phone sensor</h2><p id="dialog-description">Enter the private address shown by Phyphox.</p></div>
+        <button id="close-dialog" class="icon-button" type="button" aria-label="Close dialog">×</button>
+      </div>
+      <div class="form-grid">
+        <label><span>Sensor ID</span><small>A unique short identifier</small><input id="device-id" name="device_id" placeholder="phone-01" pattern="[A-Za-z0-9][A-Za-z0-9_-]{0,63}" autocomplete="off" required></label>
+        <label><span>Display name</span><small>Where or what it protects</small><input id="device-name" name="name" placeholder="Laptop bag" maxlength="100" autocomplete="off" required></label>
+        <label class="wide"><span>Phyphox private URL</span><small>Phone and server must share the same private network</small><input id="source-url" name="source_url" type="url" placeholder="http://192.168.1.20:8080" autocomplete="url" required></label>
+        <label class="wide"><span>Sensitivity <output id="sensitivity-value">1.5</output></span><small>Lower values trigger on smaller movements</small><input id="sensitivity" name="sensitivity" type="range" min="0.1" max="10" step="0.1" value="1.5" required></label>
+        <label class="toggle-row wide"><span><strong>Enable collection</strong><small>Start checking this sensor immediately</small></span><input id="device-enabled" name="enabled" type="checkbox" checked><i aria-hidden="true"></i></label>
+      </div>
+      <div id="form-status" class="form-status" role="status"></div>
+      <div class="dialog-actions"><button id="cancel-dialog" class="button button-secondary" type="button">Cancel</button><button id="submit-device" class="button button-primary" type="submit">Add sensor</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
   <script src="/static/app.js"></script>
 </body>
 </html>

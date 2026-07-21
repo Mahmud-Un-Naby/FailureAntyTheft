@@ -35,7 +35,15 @@ def test_health_registration_commands_and_events(tmp_path: object) -> None:
         assert client.post("/api/devices/phone-01/arm").status_code == 202
         assert client.post("/api/devices/missing/arm").status_code == 404
         assert client.get("/api/events").json() == []
-        assert client.get("/").status_code == 200
+        dashboard = client.get("/")
+        assert dashboard.status_code == 200
+        assert "FailureAntyTheft · Security Console" in dashboard.text
+        assert 'id="metric-total"' in dashboard.text
+        assert 'id="device-dialog"' in dashboard.text
+        assert client.get("/static/styles.css").status_code == 200
+        javascript = client.get("/static/app.js")
+        assert javascript.status_code == 200
+        assert "connectWebSocket" in javascript.text
 
 
 def test_registration_rejects_public_destination(tmp_path: object) -> None:
