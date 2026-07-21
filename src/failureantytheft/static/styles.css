@@ -1189,6 +1189,24 @@ tbody tr:hover td {
   border-color: transparent;
 }
 
+.alarm-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alarm-sound-button {
+  color: #ffd8dc;
+  border-color: rgba(255, 157, 168, 0.38);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.alarm-sound-button:hover:not(:disabled) {
+  color: white;
+  border-color: rgba(255, 157, 168, 0.7);
+  background: rgba(255, 255, 255, 0.11);
+}
+
 .device-dialog {
   width: min(610px, calc(100vw - 28px));
   max-height: calc(100vh - 40px);
@@ -1587,8 +1605,13 @@ input[type="range"] {
   }
 
   .alarm-button {
-    grid-column: 1 / -1;
     width: 100%;
+  }
+
+  .alarm-actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: auto 1fr;
   }
 
   .form-grid {

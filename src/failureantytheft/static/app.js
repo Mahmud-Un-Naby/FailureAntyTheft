@@ -12,6 +12,8 @@ const app = {
   ws: null,
   wsRetry: 0,
   audioContext: null,
+  audioEnabled: false,
+  audioExplicitlyMuted: false,
   alarmTimer: null,
 };
 
@@ -289,6 +291,9 @@ function scheduleLoad() {
 
 async function commandDevice(deviceId, action, { quiet = false } = {}) {
   if (app.pendingDevices.has(deviceId)) return;
+  if (action === "arm" && !app.audioExplicitlyMuted) {
+    await enableAudio({ quiet: true, test: false });
+  }
   app.pendingDevices.add(deviceId);
   renderSummary();
   renderDevices();
@@ -308,6 +313,9 @@ async function commandDevice(deviceId, action, { quiet = false } = {}) {
 async function commandAll(action) {
   const targets = app.devices.filter((device) => device.enabled !== false);
   if (!targets.length) return;
+  if (action === "arm" && !app.audioExplicitlyMuted) {
+    await enableAudio({ quiet: true, test: false });
+  }
   for (const device of targets) app.pendingDevices.add(device.device_id);
   renderSummary();
   renderDevices();
@@ -495,42 +503,89 @@ function audioConstructor() {
   return window.AudioContext || window.webkitAudioContext;
 }
 
-async function enableAudio() {
-  const Audio = audioConstructor();
-  if (!Audio) {
-    showToast("This browser does not support Web Audio.", "error");
-    return;
-  }
-  app.audioContext ||= new Audio();
-  await app.audioContext.resume();
-  $("enable-audio").classList.add("enabled");
-  $("enable-audio").lastElementChild.textContent = "Alert sound on";
-  if ("Notification" in window && Notification.permission === "default") {
-    await Notification.requestPermission();
-  }
-  playBeep();
-  showToast("Alert sound enabled.");
+function updateAudioControls() {
+  const enabled = app.audioEnabled && app.audioContext?.state === "running";
+  const control = $("enable-audio");
+  control.classList.toggle("enabled", enabled);
+  control.setAttribute("aria-pressed", String(enabled));
+  control.title = enabled ? "Mute the alarm sound" : "Enable and test the alarm sound";
+  $("sound-icon").textContent = enabled ? "🔊" : "🔇";
+  $("sound-label").textContent = enabled ? "Sound on" : "Sound off";
+  $("alarm-sound").textContent = enabled ? "Mute sound" : "Enable sound";
 }
 
-function playBeep() {
-  if (!app.audioContext) return;
-  const oscillator = app.audioContext.createOscillator();
+async function enableAudio({ quiet = false, test = true, notifications = false } = {}) {
+  const Audio = audioConstructor();
+  if (!Audio) {
+    if (!quiet) showToast("This browser does not support Web Audio.", "error");
+    return false;
+  }
+  try {
+    app.audioContext ||= new Audio();
+    await app.audioContext.resume();
+  } catch {
+    if (!quiet) showToast("The browser blocked alarm audio. Check its sound permission.", "error");
+    return false;
+  }
+  app.audioEnabled = app.audioContext.state === "running";
+  app.audioExplicitlyMuted = false;
+  updateAudioControls();
+  if (notifications && "Notification" in window && Notification.permission === "default") {
+    await Notification.requestPermission();
+  }
+  if (app.activeEvent) startAlarm();
+  else if (test) playSirenPulse(0.55);
+  if (!quiet) showToast("Alarm sound enabled. Test siren played.");
+  return app.audioEnabled;
+}
+
+async function disableAudio() {
+  app.audioExplicitlyMuted = true;
+  app.audioEnabled = false;
+  stopAlarm();
+  if (app.audioContext?.state === "running") await app.audioContext.suspend();
+  updateAudioControls();
+  showToast("Alarm sound muted.");
+}
+
+async function toggleAudio() {
+  if (app.audioEnabled) await disableAudio();
+  else await enableAudio({ notifications: true });
+}
+
+function playSirenPulse(duration = 0.78) {
+  if (!app.audioEnabled || app.audioContext?.state !== "running") return;
+  const now = app.audioContext.currentTime;
   const gain = app.audioContext.createGain();
-  oscillator.type = "sine";
-  oscillator.frequency.setValueAtTime(760, app.audioContext.currentTime);
-  oscillator.frequency.exponentialRampToValueAtTime(980, app.audioContext.currentTime + 0.14);
-  gain.gain.setValueAtTime(0.0001, app.audioContext.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.1, app.audioContext.currentTime + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001, app.audioContext.currentTime + 0.2);
-  oscillator.connect(gain);
+  const high = app.audioContext.createOscillator();
+  const low = app.audioContext.createOscillator();
+
+  high.type = "sawtooth";
+  high.frequency.setValueAtTime(680, now);
+  high.frequency.linearRampToValueAtTime(1050, now + duration * 0.5);
+  high.frequency.linearRampToValueAtTime(680, now + duration);
+  low.type = "sine";
+  low.frequency.setValueAtTime(340, now);
+  low.frequency.linearRampToValueAtTime(520, now + duration * 0.5);
+  low.frequency.linearRampToValueAtTime(340, now + duration);
+
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.16, now + 0.035);
+  gain.gain.setValueAtTime(0.16, now + duration - 0.08);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+  high.connect(gain);
+  low.connect(gain);
   gain.connect(app.audioContext.destination);
-  oscillator.start();
-  oscillator.stop(app.audioContext.currentTime + 0.21);
+  high.start(now);
+  low.start(now);
+  high.stop(now + duration);
+  low.stop(now + duration);
 }
 
 function startAlarm() {
-  playBeep();
-  if (!app.alarmTimer) app.alarmTimer = window.setInterval(playBeep, 900);
+  if (!app.audioEnabled || app.alarmTimer) return;
+  playSirenPulse();
+  app.alarmTimer = window.setInterval(playSirenPulse, 900);
 }
 
 function stopAlarm() {
@@ -564,6 +619,7 @@ function syncAlarmFromEvents() {
   app.activeEvent = movement.event_id;
   $("alarm-text").textContent = `${movement.device_id} · detected ${relativeTime(movement.started_at)}`;
   $("alarm").classList.remove("hidden");
+  startAlarm();
 }
 
 function openCreateDialog() {
@@ -687,7 +743,8 @@ $("event-filter").addEventListener("change", renderEvents);
 $("refresh").addEventListener("click", () => load());
 $("arm-all").addEventListener("click", () => commandAll("arm"));
 $("disarm-all").addEventListener("click", () => commandAll("disarm"));
-$("enable-audio").addEventListener("click", enableAudio);
+$("enable-audio").addEventListener("click", toggleAudio);
+$("alarm-sound").addEventListener("click", toggleAudio);
 $("ack").addEventListener("click", () => app.activeEvent && acknowledge(app.activeEvent));
 $("open-register").addEventListener("click", openCreateDialog);
 $("open-register-secondary").addEventListener("click", openCreateDialog);
@@ -714,6 +771,7 @@ window.addEventListener("resize", () => {
 });
 
 updateClock();
+updateAudioControls();
 window.setInterval(updateClock, 1000);
 window.setInterval(() => load({ quiet: true }), 10000);
 load();

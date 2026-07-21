@@ -69,7 +69,9 @@ curl -X POST http://localhost:8000/api/devices \
 ## Operator workflow
 
 1. Confirm the phone appears online.
-2. Arm it. Leave it still during placement/calibration.
+2. Arm it. This also prepares browser audio; leave the phone still during
+   placement/calibration. The header's **Sound on/off** control can test or mute
+   the siren at any time.
 3. Move the protected object. The dashboard shows and sounds an alarm.
 4. Acknowledge the event; this disarms the device. Re-arm manually when safe.
 

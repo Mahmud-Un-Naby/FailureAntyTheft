@@ -44,6 +44,9 @@ def test_health_registration_commands_and_events(tmp_path: object) -> None:
         javascript = client.get("/static/app.js")
         assert javascript.status_code == 200
         assert "connectWebSocket" in javascript.text
+        assert "playSirenPulse" in javascript.text
+        assert "audioExplicitlyMuted" in javascript.text
+        assert 'id="alarm-sound"' in dashboard.text
 
 
 def test_registration_rejects_public_destination(tmp_path: object) -> None:

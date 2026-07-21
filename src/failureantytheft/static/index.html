@@ -50,8 +50,8 @@
         </div>
         <div class="topbar-actions">
           <div class="current-time"><span>Local time</span><strong id="clock">--:--</strong></div>
-          <button id="enable-audio" class="button button-quiet" type="button">
-            <span aria-hidden="true">♩</span><span>Enable alert sound</span>
+          <button id="enable-audio" class="button button-quiet" type="button" aria-pressed="false" title="Enable and test the alarm sound">
+            <span id="sound-icon" aria-hidden="true">🔇</span><span id="sound-label">Sound off</span>
           </button>
           <button id="open-register" class="button button-primary" type="button">
             <span aria-hidden="true">＋</span><span>Add sensor</span>
@@ -159,7 +159,10 @@
   <aside id="alarm" class="alarm-banner hidden" role="alert" aria-live="assertive">
     <div class="alarm-symbol">!</div>
     <div><p>Immediate attention required</p><strong>Movement detected</strong><span id="alarm-text"></span></div>
-    <button id="ack" class="button alarm-button" type="button">Acknowledge & disarm</button>
+    <div class="alarm-actions">
+      <button id="alarm-sound" class="button alarm-sound-button" type="button">Enable sound</button>
+      <button id="ack" class="button alarm-button" type="button">Acknowledge & disarm</button>
+    </div>
   </aside>
 
   <dialog id="device-dialog" class="device-dialog">
