@@ -14,35 +14,38 @@ security system.
 - Phyphox on one or more phones
 - All devices connected to the same private Wi-Fi/hotspot
 
-## Install
+## Run
+
+```bash
+./run.sh
+```
+
+The launcher performs first-time setup, creates `.env`, installs dependencies,
+starts the Docker MQTT broker when needed, and launches the server. On later
+runs, use the same command. Open `http://localhost:8000`; API documentation is
+at `http://localhost:8000/docs`.
+
+To run without Docker or an MQTT broker:
+
+```bash
+./run.sh --inproc
+```
+
+For manual setup, use:
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -e ".[dev]"
 cp .env.example .env
-```
-
-Start the broker:
-
-```bash
 docker compose up -d mosquitto
-```
-
-Load the environment and start the application:
-
-```bash
 set -a
 source .env
 set +a
 .venv/bin/failureantytheft
 ```
 
-Open `http://localhost:8000`. API documentation is at
-`http://localhost:8000/docs`.
-
-For development without a broker, explicitly set
-`FAILUREANTYTHEFT_TRANSPORT=inproc`. The application never silently falls back from
-MQTT.
+The application never silently falls back from MQTT; use `--inproc` explicitly
+when that is the desired mode.
 
 ## Connect a phone
 
@@ -86,6 +89,23 @@ curl -X POST http://localhost:8000/api/devices \
 
 Architecture, decisions, and per-pass reports are in `ARCHITECTURE.md` and
 `collab/`.
+
+## Presentation
+
+The complete editable deck is at
+`presentation/FailureAntyTheft-Presentation.pptx`, with a light-theme copy at
+`presentation/FailureAntyTheft-Presentation-Light.pptx`. Its folder also
+contains the content outline, embedded-notes source, presentation-day demo
+checklist, official branding sources, assets, and a reproducible PptxGenJS build
+script.
+
+To rebuild it:
+
+```bash
+cd presentation
+npm install
+npm run build:all
+```
 
 ## Physical acceptance check
 

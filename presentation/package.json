@@ -1,0 +1,14 @@
+{
+  "name": "failureantytheft-presentation",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Reproducible PowerPoint deck for the FailureAntyTheft project",
+  "scripts": {
+    "build": "node build-presentation.js",
+    "build:light": "node build-presentation.js --light",
+    "build:all": "npm run build && npm run build:light"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}
